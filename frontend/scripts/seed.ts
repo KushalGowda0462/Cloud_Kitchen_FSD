@@ -1,74 +1,135 @@
 import mongoose from 'mongoose';
 import Dish from '../src/lib/models/Dish';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cloudkitchen';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cloudkitchen1';
 
-const dishes = [
-  // Indian Cuisine
-  { name: 'Butter Chicken', cuisine: 'Indian', category: 'Mains', isVeg: false, price: 320, imageUrl: 'https://via.placeholder.com/300x200?text=Butter+Chicken', description: 'Creamy tomato-based curry with tender chicken pieces' },
-  { name: 'Paneer Tikka', cuisine: 'Indian', category: 'Starters', isVeg: true, price: 180, imageUrl: 'https://via.placeholder.com/300x200?text=Paneer+Tikka', description: 'Marinated cottage cheese grilled to perfection' },
-  { name: 'Dal Makhani', cuisine: 'Indian', category: 'Mains', isVeg: true, price: 150, imageUrl: 'https://via.placeholder.com/300x200?text=Dal+Makhani', description: 'Creamy black lentils cooked with butter and cream' },
-  { name: 'Biryani', cuisine: 'Indian', category: 'Mains', isVeg: false, price: 280, imageUrl: 'https://via.placeholder.com/300x200?text=Biryani', description: 'Fragrant basmati rice with spiced meat' },
-  { name: 'Samosa', cuisine: 'Indian', category: 'Appetizers', isVeg: true, price: 40, imageUrl: 'https://via.placeholder.com/300x200?text=Samosa', description: 'Crispy pastry filled with spiced potatoes' },
-  { name: 'Mango Lassi', cuisine: 'Indian', category: 'Beverages', isVeg: true, price: 80, imageUrl: 'https://via.placeholder.com/300x200?text=Mango+Lassi', description: 'Refreshing yogurt drink with mango' },
-  { name: 'Gulab Jamun', cuisine: 'Indian', category: 'Desserts', isVeg: true, price: 90, imageUrl: 'https://via.placeholder.com/300x200?text=Gulab+Jamun', description: 'Sweet milk dumplings in sugar syrup' },
+// Local Indian Dishes mapping to /public/assets/photos/Indian
+const localIndianDishes = [
+  // Veg - Main Course
+  { name: 'Masala Dosa', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 120, imageUrl: '/assets/photos/Indian/Veg/Main Course/Masala Dosa.jpeg', description: 'Crispy rice crêpe filled with spiced potato mash.' },
+  { name: 'Palak Paneer', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 210, imageUrl: '/assets/photos/Indian/Veg/Main Course/Palak-Paneer.jpg', description: 'Cottage cheese cubes in a thick paste made from puréed spinach.' },
+  { name: 'Rava Idli', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 90, imageUrl: '/assets/photos/Indian/Veg/Main Course/Rava Idli.jpeg', description: 'Steamed semolina cakes served with chutney and sambar.' },
+  { name: 'Veg Thali', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 250, imageUrl: '/assets/photos/Indian/Veg/Main Course/Veg Thali.avif', description: 'A complete meal with various curries, dal, rice, and bread.' },
+  { name: 'Paneer Pasanda', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 230, imageUrl: '/assets/photos/Indian/Veg/Main Course/paneer-pasanda-recipe.jpg', description: 'Rich and creamy paneer dish with a flavorful gravy.' },
+  { name: 'Veg Pulao', cuisine: 'Indian', category: 'Main Course', isVeg: true, price: 180, imageUrl: '/assets/photos/Indian/Veg/Main Course/veg pulao.jpg', description: 'Fragrant basmati rice cooked with mixed vegetables.' },
 
-  // Chinese Cuisine
-  { name: 'Kung Pao Chicken', cuisine: 'Chinese', category: 'Mains', isVeg: false, price: 280, imageUrl: 'https://via.placeholder.com/300x200?text=Kung+Pao+Chicken', description: 'Spicy stir-fried chicken with peanuts' },
-  { name: 'Spring Rolls', cuisine: 'Chinese', category: 'Starters', isVeg: true, price: 120, imageUrl: 'https://via.placeholder.com/300x200?text=Spring+Rolls', description: 'Crispy vegetable rolls with dipping sauce' },
-  { name: 'Sweet and Sour Pork', cuisine: 'Chinese', category: 'Mains', isVeg: false, price: 300, imageUrl: 'https://via.placeholder.com/300x200?text=Sweet+and+Sour+Pork', description: 'Tender pork in tangy sweet and sour sauce' },
-  { name: 'Mapo Tofu', cuisine: 'Chinese', category: 'Mains', isVeg: true, price: 200, imageUrl: 'https://via.placeholder.com/300x200?text=Mapo+Tofu', description: 'Spicy Sichuan tofu in chili sauce' },
-  { name: 'Dim Sum', cuisine: 'Chinese', category: 'Appetizers', isVeg: false, price: 180, imageUrl: 'https://via.placeholder.com/300x200?text=Dim+Sum', description: 'Steamed dumplings with various fillings' },
-  { name: 'Green Tea', cuisine: 'Chinese', category: 'Beverages', isVeg: true, price: 60, imageUrl: 'https://via.placeholder.com/300x200?text=Green+Tea', description: 'Traditional Chinese green tea' },
+  // Veg - Starters
+  { name: 'Samosa', cuisine: 'Indian', category: 'Starters', isVeg: true, price: 40, imageUrl: '/assets/photos/Indian/Veg/Starters/Samosa.jpeg', description: 'Crispy pastry filled with spiced potatoes and peas.' },
+  { name: 'Dahi Bhalla', cuisine: 'Indian', category: 'Starters', isVeg: true, price: 100, imageUrl: '/assets/photos/Indian/Veg/Starters/cropped-Delhi_Dahi_bhalla-2687.jpg', description: 'Lentil fritters soaked in creamy yogurt and topped with chutneys.' },
+  { name: 'Hara Bhara Kebab', cuisine: 'Indian', category: 'Starters', isVeg: true, price: 150, imageUrl: '/assets/photos/Indian/Veg/Starters/hara-bhara-kebab_.jpg', description: 'Healthy and delicious spinach and green pea kebabs.' },
 
-  // Italian Cuisine
-  { name: 'Margherita Pizza', cuisine: 'Italian', category: 'Mains', isVeg: true, price: 250, imageUrl: 'https://via.placeholder.com/300x200?text=Margherita+Pizza', description: 'Classic pizza with tomato, mozzarella, and basil' },
-  { name: 'Chicken Alfredo Pasta', cuisine: 'Italian', category: 'Mains', isVeg: false, price: 320, imageUrl: 'https://via.placeholder.com/300x200?text=Chicken+Alfredo', description: 'Creamy pasta with grilled chicken' },
-  { name: 'Bruschetta', cuisine: 'Italian', category: 'Starters', isVeg: true, price: 150, imageUrl: 'https://via.placeholder.com/300x200?text=Bruschetta', description: 'Toasted bread with fresh tomatoes and basil' },
-  { name: 'Lasagna', cuisine: 'Italian', category: 'Mains', isVeg: false, price: 350, imageUrl: 'https://via.placeholder.com/300x200?text=Lasagna', description: 'Layered pasta with meat and cheese' },
-  { name: 'Tiramisu', cuisine: 'Italian', category: 'Desserts', isVeg: true, price: 180, imageUrl: 'https://via.placeholder.com/300x200?text=Tiramisu', description: 'Coffee-flavored Italian dessert' },
-  { name: 'Espresso', cuisine: 'Italian', category: 'Beverages', isVeg: true, price: 80, imageUrl: 'https://via.placeholder.com/300x200?text=Espresso', description: 'Strong Italian coffee' },
+  // Non-Veg - Main Course
+  { name: 'Butter Chicken', cuisine: 'Indian', category: 'Main Course', isVeg: false, price: 320, imageUrl: '/assets/photos/Indian/Non-Veg/Main Course/Butter Chicken.jpeg', description: 'Tender chicken in a creamy, buttery tomato sauce.' },
+  { name: 'Chicken Curry', cuisine: 'Indian', category: 'Main Course', isVeg: false, price: 280, imageUrl: '/assets/photos/Indian/Non-Veg/Main Course/Chicken Curry.jpeg', description: 'Classic home-style chicken curry with aromatic spices.' },
+  { name: 'Chicken Biryani', cuisine: 'Indian', category: 'Main Course', isVeg: false, price: 300, imageUrl: '/assets/photos/Indian/Non-Veg/Main Course/Chicken-Biryani-Recipe-01-1-500x500.jpg', description: 'Signature spice-infused rice with succulent chicken pieces.' },
+  { name: 'Shrimp Pulao', cuisine: 'Indian', category: 'Main Course', isVeg: false, price: 350, imageUrl: '/assets/photos/Indian/Non-Veg/Main Course/Shrimp Pulao.jpeg', description: 'Delicate shrimp cooked with basmati rice and mild spices.' },
 
-  // Mexican Cuisine
-  { name: 'Tacos', cuisine: 'Mexican', category: 'Mains', isVeg: false, price: 220, imageUrl: 'https://via.placeholder.com/300x200?text=Tacos', description: 'Soft tortillas with seasoned meat and vegetables' },
-  { name: 'Guacamole', cuisine: 'Mexican', category: 'Appetizers', isVeg: true, price: 140, imageUrl: 'https://via.placeholder.com/300x200?text=Guacamole', description: 'Fresh avocado dip with chips' },
-  { name: 'Burrito', cuisine: 'Mexican', category: 'Mains', isVeg: false, price: 280, imageUrl: 'https://via.placeholder.com/300x200?text=Burrito', description: 'Large flour tortilla wrapped with fillings' },
-  { name: 'Churros', cuisine: 'Mexican', category: 'Desserts', isVeg: true, price: 120, imageUrl: 'https://via.placeholder.com/300x200?text=Churros', description: 'Fried dough pastry with cinnamon sugar' },
-  { name: 'Horchata', cuisine: 'Mexican', category: 'Beverages', isVeg: true, price: 90, imageUrl: 'https://via.placeholder.com/300x200?text=Horchata', description: 'Sweet rice milk drink' },
+  // Non-Veg - Starters
+  { name: 'Mutton Tandoori', cuisine: 'Indian', category: 'Starters', isVeg: false, price: 400, imageUrl: '/assets/photos/Indian/Non-Veg/Starters/Mutton Tandoori.webp', description: 'Mutton pieces marinated in yogurt and spices, grilled in a tandoor.' },
+  { name: 'Garlic Chicken', cuisine: 'Indian', category: 'Starters', isVeg: false, price: 220, imageUrl: '/assets/photos/Indian/Non-Veg/Starters/garlic-chicken.jpg', description: 'Zesty chicken starters loaded with roasted garlic flavor.' },
+  { name: 'Tandoori Chicken', cuisine: 'Indian', category: 'Starters', isVeg: false, price: 250, imageUrl: '/assets/photos/Indian/Non-Veg/Starters/tandoori-chicken.webp', description: 'The legendary roasted chicken marinated in classic tandoori masala.' },
+];
 
-  // Arabian Cuisine
-  { name: 'Shawarma', cuisine: 'Arabian', category: 'Mains', isVeg: false, price: 200, imageUrl: 'https://via.placeholder.com/300x200?text=Shawarma', description: 'Spiced meat wrapped in pita bread' },
-  { name: 'Hummus', cuisine: 'Arabian', category: 'Appetizers', isVeg: true, price: 130, imageUrl: 'https://via.placeholder.com/300x200?text=Hummus', description: 'Creamy chickpea dip with tahini' },
-  { name: 'Falafel', cuisine: 'Arabian', category: 'Starters', isVeg: true, price: 150, imageUrl: 'https://via.placeholder.com/300x200?text=Falafel', description: 'Deep-fried chickpea balls' },
-  { name: 'Baklava', cuisine: 'Arabian', category: 'Desserts', isVeg: true, price: 160, imageUrl: 'https://via.placeholder.com/300x200?text=Baklava', description: 'Sweet pastry with nuts and honey' },
+// Added specific high-quality desserts to ensure visibility
+const manualDesserts = [
+  {
+    name: 'Gulab Jamun',
+    cuisine: 'Desserts',
+    category: 'Main Course',
+    isVeg: true,
+    price: 90,
+    imageUrl: '/assets/photos/Indian/Indian snacks Photos - Download Free High-Quality Pictures _ Freepik.jpg',
+    description: 'Soft, melt-in-your-mouth milk solid balls soaked in rose-flavored syrup.'
+  },
+  { name: 'Chocolate Lava Cake', cuisine: 'Desserts', category: 'Main Course', isVeg: true, price: 180, imageUrl: 'https://www.themealdb.com/images/media/meals/ytme8t1764111401.jpg', description: 'Decadent chocolate cake with a gooey, molten center.' },
+  { name: 'Cheesecake', cuisine: 'Desserts', category: 'Main Course', isVeg: true, price: 220, imageUrl: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=800&q=80', description: 'Creamy New York style cheesecake with a Graham cracker crust.' },
+  { name: 'Brownie with Ice Cream', cuisine: 'Desserts', category: 'Main Course', isVeg: true, price: 150, imageUrl: 'https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=800&q=80', description: 'Warm fudgy brownie topped with a scoop of vanilla ice cream.' },
+];
 
-  // Continental Cuisine
-  { name: 'Grilled Chicken', cuisine: 'Continental', category: 'Mains', isVeg: false, price: 350, imageUrl: 'https://via.placeholder.com/300x200?text=Grilled+Chicken', description: 'Tender grilled chicken breast with herbs' },
-  { name: 'Caesar Salad', cuisine: 'Continental', category: 'Starters', isVeg: true, price: 200, imageUrl: 'https://via.placeholder.com/300x200?text=Caesar+Salad', description: 'Fresh romaine lettuce with Caesar dressing' },
-  { name: 'Fish and Chips', cuisine: 'Continental', category: 'Mains', isVeg: false, price: 380, imageUrl: 'https://via.placeholder.com/300x200?text=Fish+and+Chips', description: 'Battered fish with crispy fries' },
-  { name: 'Chocolate Brownie', cuisine: 'Continental', category: 'Desserts', isVeg: true, price: 150, imageUrl: 'https://via.placeholder.com/300x200?text=Brownie', description: 'Rich chocolate brownie with ice cream' },
-
-  // Beverages
-  { name: 'Fresh Orange Juice', cuisine: 'Beverages', category: 'Beverages', isVeg: true, price: 70, imageUrl: 'https://via.placeholder.com/300x200?text=Orange+Juice', description: 'Freshly squeezed orange juice' },
-  { name: 'Iced Coffee', cuisine: 'Beverages', category: 'Beverages', isVeg: true, price: 100, imageUrl: 'https://via.placeholder.com/300x200?text=Iced+Coffee', description: 'Chilled coffee with ice and cream' },
-  { name: 'Lemonade', cuisine: 'Beverages', category: 'Beverages', isVeg: true, price: 60, imageUrl: 'https://via.placeholder.com/300x200?text=Lemonade', description: 'Refreshing lemon drink' },
+const worldCuisineMapping = [
+  { ui: 'Chinese', apiType: 'area', apiValue: 'Chinese' },
+  { ui: 'Italian', apiType: 'area', apiValue: 'Italian' },
+  { ui: 'Mexican', apiType: 'area', apiValue: 'Mexican' },
+  { ui: 'Arabian', apiType: 'area', apiValue: 'Egyptian' },
+  { ui: 'Desserts', apiType: 'category', apiValue: 'Dessert' }
 ];
 
 async function seed() {
   try {
+    console.log('Connecting to MongoDB...');
     await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB');
+    console.log('Connected successfully');
 
-    // Clear existing dishes
     await Dish.deleteMany({});
     console.log('Cleared existing dishes');
 
-    // Insert new dishes
-    await Dish.insertMany(dishes);
-    console.log(`Seeded ${dishes.length} dishes successfully`);
+    const allDishes = [
+      ...localIndianDishes.map(d => ({ ...d, isAvailable: true })),
+      ...manualDesserts.map(d => ({ ...d, isAvailable: true }))
+    ];
+
+    for (const mapping of worldCuisineMapping) {
+      try {
+        console.log(`Fetching ${mapping.ui} dishes...`);
+        const url = mapping.apiType === 'area'
+          ? `https://www.themealdb.com/api/json/v1/1/filter.php?a=${mapping.apiValue}`
+          : `https://www.themealdb.com/api/json/v1/1/filter.php?c=${mapping.apiValue}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.meals) {
+          const mealsToFetch = data.meals.slice(0, 10);
+          let addedCount = 0;
+
+          for (let i = 0; i < mealsToFetch.length && addedCount < 6; i++) {
+            const meal = mealsToFetch[i];
+
+            // Skip manual duplicates
+            if (manualDesserts.some(md => md.name.toLowerCase() === meal.strMeal.toLowerCase())) continue;
+
+            const detailResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`);
+            const detailData = await detailResponse.json();
+            const fullMeal = detailData.meals[0];
+
+            // STRICT BEEF FILTER
+            if (
+              fullMeal.strCategory === 'Beef' ||
+              fullMeal.strMeal.toLowerCase().includes('beef') ||
+              (fullMeal.strInstructions && fullMeal.strInstructions.toLowerCase().includes('beef'))
+            ) {
+              console.log(`Skipping beef item: ${fullMeal.strMeal}`);
+              continue;
+            }
+
+            let category = 'Main Course';
+            if (mapping.ui !== 'Desserts' && addedCount < 2) {
+              category = 'Starters';
+            }
+
+            allDishes.push({
+              name: fullMeal.strMeal,
+              cuisine: mapping.ui,
+              // For Desserts, also use 'Main Course' so it passes the 'all' or 'Main Course' filters
+              category: mapping.ui === 'Desserts' ? 'Main Course' : category,
+              isVeg: ['Vegetarian', 'Dessert'].includes(fullMeal.strCategory) || (fullMeal.strInstructions && fullMeal.strInstructions.toLowerCase().includes('vegetarian')),
+              price: Math.floor(Math.random() * (400 - 150 + 1) + 150),
+              imageUrl: fullMeal.strMealThumb,
+              description: fullMeal.strInstructions ? fullMeal.strInstructions.substring(0, 150).replace(/\r\n/g, ' ') + '...' : 'Delicious ' + fullMeal.strMeal,
+              isAvailable: true
+            });
+            addedCount++;
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching ${mapping.ui}:`, error);
+      }
+    }
+
+    await Dish.insertMany(allDishes);
+    console.log(`Successfully seeded ${allDishes.length} dishes.`);
 
     await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
     process.exit(0);
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -77,4 +138,3 @@ async function seed() {
 }
 
 seed();
-

@@ -63,6 +63,8 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
 
     try {
+      const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+
       const orderData = {
         items: state.items.map((item) => ({
           dishId: item.dishId,
@@ -70,6 +72,9 @@ export default function CheckoutPage() {
         })),
         address: addressData,
         paymentMethod: selectedPaymentMethod,
+        userId: user.id || null,
+        userName: user.name || 'Guest',
+        userEmail: user.email || null,
       };
 
       const response = await fetch('/api/orders', {
@@ -220,11 +225,10 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 <button
                   onClick={() => handlePaymentSelect('UPI')}
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
-                    selectedPaymentMethod === 'UPI'
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-300 hover:border-blue-300'
-                  }`}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${selectedPaymentMethod === 'UPI'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-300'
+                    }`}
                 >
                   <div className="font-semibold">UPI</div>
                   <div className="text-sm text-gray-600">Pay using UPI apps</div>
@@ -232,11 +236,10 @@ export default function CheckoutPage() {
 
                 <button
                   onClick={() => handlePaymentSelect('CARD')}
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
-                    selectedPaymentMethod === 'CARD'
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-300 hover:border-blue-300'
-                  }`}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${selectedPaymentMethod === 'CARD'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-300'
+                    }`}
                 >
                   <div className="font-semibold">Card</div>
                   <div className="text-sm text-gray-600">Credit or Debit Card</div>
@@ -244,11 +247,10 @@ export default function CheckoutPage() {
 
                 <button
                   onClick={() => handlePaymentSelect('COD')}
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
-                    selectedPaymentMethod === 'COD'
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-300 hover:border-blue-300'
-                  }`}
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${selectedPaymentMethod === 'COD'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-300'
+                    }`}
                 >
                   <div className="font-semibold">Cash on Delivery</div>
                   <div className="text-sm text-gray-600">Pay when you receive</div>

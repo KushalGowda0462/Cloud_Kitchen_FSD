@@ -10,22 +10,9 @@ interface DishType {
   isAvailable: boolean;
 }
 
-function mapCategory(category: string) {
-  if (category.toLowerCase() === 'main') return 'Main Course';
-  if (category.toLowerCase() === 'starters') return 'Starters';
-  return category;
-}
-
-function getDishImage(dish: DishType) {
-  const cuisine = dish.cuisine;
-  const vegType = dish.isVeg ? 'Veg' : 'Non-Veg';
-  const category = mapCategory(dish.category);
-
-  return `/Photos%20%26%20Videos/${cuisine}/${vegType}/${category}/${dish.name}.jpg`;
-}
-
 export async function GET(request: NextRequest) {
   try {
+    console.log('API connecting to:', process.env.MONGODB_URI);
     await connectDB();
 
     const searchParams = request.nextUrl.searchParams;
@@ -43,12 +30,7 @@ export async function GET(request: NextRequest) {
 
     const dishes = await Dish.find(query).sort({ createdAt: -1 });
 
-    const result = dishes.map((dish) => ({
-      ...dish.toObject(),
-      image: getDishImage(dish)
-    }));
-
-    return NextResponse.json(result);
+    return NextResponse.json(dishes);
   } catch (error) {
     console.error('Error fetching dishes:', error);
     return NextResponse.json(

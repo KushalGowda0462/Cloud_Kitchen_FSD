@@ -28,6 +28,9 @@ export type PaymentMethod = 'UPI' | 'CARD' | 'COD';
 export type OrderStatus = 'PLACED' | 'CONFIRMED' | 'PREPARING' | 'OUT_FOR_DELIVERY' | 'DELIVERED';
 
 export interface IOrder extends Document {
+  userId?: mongoose.Types.ObjectId;
+  userName?: string;
+  userEmail?: string;
   items: IOrderItem[];
   totals: IOrderTotals;
   address: IOrderAddress;
@@ -63,6 +66,9 @@ const OrderTotalsSchema = new Schema<IOrderTotals>({
 
 const OrderSchema = new Schema<IOrder>(
   {
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    userName: { type: String },
+    userEmail: { type: String },
     items: [OrderItemSchema],
     totals: OrderTotalsSchema,
     address: OrderAddressSchema,

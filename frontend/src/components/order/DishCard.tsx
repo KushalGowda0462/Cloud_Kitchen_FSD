@@ -44,14 +44,12 @@ export default function DishCard({ dish }: DishCardProps) {
           unoptimized
         />
         <div
-          className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center ${
-            dish.isVeg ? 'bg-green-500' : 'bg-red-500'
-          }`}
+          className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center ${dish.isVeg ? 'bg-green-500' : 'bg-red-500'
+            }`}
         >
           <div
-            className={`w-3 h-3 rounded-full ${
-              dish.isVeg ? 'bg-white' : 'bg-white'
-            }`}
+            className={`w-3 h-3 rounded-full ${dish.isVeg ? 'bg-white' : 'bg-white'
+              }`}
           />
         </div>
       </div>
@@ -71,4 +69,3 @@ export default function DishCard({ dish }: DishCardProps) {
     </div>
   );
 }
-

@@ -80,7 +80,7 @@ export default function CategoryDropdown({
       setExpandedCuisine(null);
       return;
     }
-    
+
     if (expandedCuisine === cuisine) {
       setExpandedCuisine(null);
     } else {
@@ -114,16 +114,15 @@ export default function CategoryDropdown({
               <div key={cuisine.name}>
                 <button
                   onClick={() => handleCuisineClick(cuisine.name)}
-                  className={`w-full flex items-center justify-between px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors ${
-                    selectedCuisine === cuisine.name && (cuisine.name === 'Desserts' || selectedCategory !== 'all')
+                  className={`w-full flex items-center justify-between px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors ${selectedCuisine === cuisine.name && (cuisine.name === 'Desserts' || selectedCategory !== 'all')
                       ? 'bg-blue-50 text-blue-600 font-medium'
                       : ''
-                  }`}
+                    }`}
                 >
                   <span className="font-medium">{cuisine.name}</span>
                   {cuisine.name !== 'Desserts' && (
-                    expandedCuisine === cuisine.name ? 
-                      <ChevronDown className="w-4 h-4" /> : 
+                    expandedCuisine === cuisine.name ?
+                      <ChevronDown className="w-4 h-4" /> :
                       <ChevronRight className="w-4 h-4" />
                   )}
                 </button>
@@ -133,11 +132,10 @@ export default function CategoryDropdown({
                       <button
                         key={category}
                         onClick={() => handleCategorySelect(cuisine.name, category)}
-                        className={`w-full text-left px-4 py-2 rounded-md transition-colors ${
-                          selectedCuisine === cuisine.name && selectedCategory === category
+                        className={`w-full text-left px-4 py-2 rounded-md transition-colors ${selectedCuisine === cuisine.name && selectedCategory === category
                             ? 'bg-blue-50 text-blue-600 font-medium'
                             : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                          }`}
                       >
                         {category}
                       </button>
@@ -152,4 +150,3 @@ export default function CategoryDropdown({
     </div>
   );
 }
-

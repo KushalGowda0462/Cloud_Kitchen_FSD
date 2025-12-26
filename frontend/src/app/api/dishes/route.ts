@@ -2,8 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Dish from '@/lib/models/Dish';
 
+interface DishType {
+  name: string;
+  cuisine: string;
+  category: string;
+  isVeg: boolean;
+  isAvailable: boolean;
+}
+
 export async function GET(request: NextRequest) {
   try {
+    console.log('API connecting to:', process.env.MONGODB_URI);
     await connectDB();
 
     const searchParams = request.nextUrl.searchParams;
@@ -11,21 +20,13 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const vegMode = searchParams.get('vegMode') || 'all';
 
-    const query: any = { isAvailable: true };
+    const query: Record<string, unknown> = { isAvailable: true };
 
-    if (cuisine && cuisine !== 'all') {
-      query.cuisine = cuisine;
-    }
+    if (cuisine && cuisine !== 'all') query.cuisine = cuisine;
+    if (category && category !== 'all') query.category = category;
 
-    if (category && category !== 'all') {
-      query.category = category;
-    }
-
-    if (vegMode === 'veg') {
-      query.isVeg = true;
-    } else if (vegMode === 'nonveg') {
-      query.isVeg = false;
-    }
+    if (vegMode === 'veg') query.isVeg = true;
+    else if (vegMode === 'nonveg') query.isVeg = false;
 
     const dishes = await Dish.find(query).sort({ createdAt: -1 });
 
@@ -38,4 +39,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

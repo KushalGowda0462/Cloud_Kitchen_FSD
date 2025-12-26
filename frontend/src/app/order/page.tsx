@@ -40,7 +40,6 @@ export default function OrderPage() {
     }
   };
 
-  // Client-side filtering for real-time updates
   const filteredDishes = dishes.filter((dish) => {
     if (selectedCuisine !== 'all' && dish.cuisine !== selectedCuisine) {
       return false;
@@ -95,16 +94,6 @@ export default function OrderPage() {
       ) : filteredDishes.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-600 text-lg">No dishes found matching your filters.</p>
-          <button
-            onClick={() => {
-              setSelectedCuisine('all');
-              setSelectedCategory('all');
-              setVegMode('all');
-            }}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Clear Filters
-          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -116,4 +105,3 @@ export default function OrderPage() {
     </div>
   );
 }
-

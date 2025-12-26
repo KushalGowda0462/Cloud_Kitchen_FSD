@@ -20,6 +20,9 @@ const orderSchema = z.object({
     pincode: z.string().min(1),
   }),
   paymentMethod: z.enum(['UPI', 'CARD', 'COD']),
+  userId: z.string().optional(),
+  userName: z.string().optional(),
+  userEmail: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -75,6 +78,9 @@ export async function POST(request: NextRequest) {
       },
       address: validatedData.address,
       paymentMethod: validatedData.paymentMethod,
+      userId: validatedData.userId,
+      userName: validatedData.userName,
+      userEmail: validatedData.userEmail,
       status: 'PLACED',
     });
 
@@ -84,13 +90,32 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }
     console.error('Error creating order:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    await connectDB();
+    const searchParams = request.nextUrl.searchParams;
+    const userId = searchParams.get('userId');
+
+    const query = userId ? { userId } : {};
+    const orders = await Order.find(query).sort({ createdAt: -1 });
+
+    return NextResponse.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch orders' },
       { status: 500 }
     );
   }

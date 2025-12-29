@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Dancing_Script, Poppins } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -11,8 +11,20 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ['latin'],
+  variable: '--font-dancing-script',
+  weight: ['400', '500', '600', '700'],
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  weight: ['300', '400', '500', '600', '700', '800'],
+});
+
 export const metadata: Metadata = {
-  title: 'CloudKitchen - Fresh Meals Delivered',
+  title: 'Thindi Potha - Fresh Meals Delivered',
   description: 'Order delicious meals from our cloud kitchen',
 };
 
@@ -23,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${inter.variable} ${dancingScript.variable} ${poppins.variable} antialiased`} suppressHydrationWarning>
         <CartProvider>
           <Navbar />
           <main className="min-h-screen">{children}</main>

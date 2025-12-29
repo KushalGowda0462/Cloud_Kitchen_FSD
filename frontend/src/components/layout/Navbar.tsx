@@ -127,7 +127,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
-            className="text-2xl font-bold text-gray-900"
+            className="text-3xl font-bold text-gray-900 font-[family-name:var(--font-dancing-script)] bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-700 hover:via-red-600 hover:to-orange-700 transition-all"
             onClick={(e) => {
               if (pathname === '/') {
                 e.preventDefault();
@@ -135,7 +135,7 @@ export default function Navbar() {
               }
             }}
           >
-            CloudKitchen
+            Thindi Potha
           </Link>
 
           {/* Desktop Navigation */}

@@ -5,34 +5,37 @@ import connectDB from '@/lib/db';
 import User from '@/lib/models/User';
 import { generateToken } from '@/lib/utils/jwt';
 
-const loginSchema = z.object({
+const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const body = await request.json();
-    const validatedData = loginSchema.parse(body);
+    const validatedData = signupSchema.parse(body);
 
-    // Find user
-    const user = await User.findOne({ email: validatedData.email.toLowerCase() });
-    if (!user) {
+    // Check if user exists
+    const existingUser = await User.findOne({ email: validatedData.email.toLowerCase() });
+    if (existingUser) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
+        { error: 'Email already registered' },
+        { status: 400 }
       );
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(validatedData.password, user.passwordHash);
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
+    // Hash password
+    const passwordHash = await bcrypt.hash(validatedData.password, 10);
+
+    // Create user
+    const user = new User({
+      email: validatedData.email.toLowerCase(),
+      passwordHash,
+      role: 'customer',
+    });
+
+    await user.save();
 
     // Generate JWT
     const token = generateToken({
@@ -56,10 +59,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.error('Login error:', error);
+    console.error('Signup error:', error);
     return NextResponse.json(
-      { error: 'Failed to login' },
+      { error: 'Failed to create account' },
       { status: 500 }
     );
   }
 }
+

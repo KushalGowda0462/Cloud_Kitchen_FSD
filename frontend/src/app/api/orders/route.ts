@@ -3,6 +3,9 @@ import { z } from 'zod';
 import connectDB from '@/lib/db';
 import Order from '@/lib/models/Order';
 import Dish from '@/lib/models/Dish';
+import { requireAuth } from '@/lib/auth';
+import { calculateTotals } from '@/lib/utils/totals';
+import mongoose from 'mongoose';
 
 const orderSchema = z.object({
   items: z.array(
@@ -20,30 +23,30 @@ const orderSchema = z.object({
     pincode: z.string().min(1),
   }),
   paymentMethod: z.enum(['UPI', 'CARD', 'COD']),
-  userId: z.string().optional(),
-  userName: z.string().optional(),
-  userEmail: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
+    // Require authentication
+    const authUser = requireAuth(request);
+
     const body = await request.json();
     const validatedData = orderSchema.parse(body);
 
     // Fetch dish details
-    const dishIds = validatedData.items.map((item) => item.dishId);
-    const dishes = await Dish.find({ _id: { $in: dishIds } });
+    const dishIds = validatedData.items.map((id) => new mongoose.Types.ObjectId(id.dishId));
+    const dishes = await Dish.find({ _id: { $in: dishIds }, isAvailable: true });
 
     if (dishes.length !== validatedData.items.length) {
       return NextResponse.json(
-        { error: 'Some dishes not found' },
+        { error: 'Some dishes not found or unavailable' },
         { status: 400 }
       );
     }
 
-    // Build order items with dish details
+    // Build order items with full dish details (including cuisine/category for analytics)
     const orderItems = validatedData.items.map((item) => {
       const dish = dishes.find((d) => d._id.toString() === item.dishId);
       if (!dish) {
@@ -52,6 +55,8 @@ export async function POST(request: NextRequest) {
       return {
         dishId: dish._id,
         name: dish.name,
+        cuisine: dish.cuisine,
+        category: dish.category,
         price: dish.price,
         qty: item.qty,
         isVeg: dish.isVeg,
@@ -59,28 +64,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Calculate totals
-    const subtotal = orderItems.reduce(
-      (sum, item) => sum + item.price * item.qty,
-      0
-    );
-    const tax = subtotal * 0.05; // 5% tax
-    const deliveryFee = subtotal > 500 ? 0 : 50; // Free delivery above 500
-    const grandTotal = subtotal + tax + deliveryFee;
+    const totals = calculateTotals(orderItems);
 
     // Create order
     const order = new Order({
+      userId: new mongoose.Types.ObjectId(authUser.userId),
       items: orderItems,
-      totals: {
-        subtotal,
-        tax,
-        deliveryFee,
-        grandTotal,
-      },
+      totals,
       address: validatedData.address,
       paymentMethod: validatedData.paymentMethod,
-      userId: validatedData.userId,
-      userName: validatedData.userName,
-      userEmail: validatedData.userEmail,
       status: 'PLACED',
     });
 
@@ -94,28 +86,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    if (error instanceof Error && error.message === 'Authentication required') {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
     console.error('Error creating order:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    await connectDB();
-    const searchParams = request.nextUrl.searchParams;
-    const userId = searchParams.get('userId');
-
-    const query = userId ? { userId } : {};
-    const orders = await Order.find(query).sort({ createdAt: -1 });
-
-    return NextResponse.json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch orders' },
       { status: 500 }
     );
   }

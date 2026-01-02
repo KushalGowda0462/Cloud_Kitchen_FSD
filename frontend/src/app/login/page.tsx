@@ -37,8 +37,8 @@ export default function LoginPage() {
             sessionStorage.setItem('user', JSON.stringify(data.user));
             toast.success(`Welcome back, ${data.user.name}!`);
 
-            // Strictly user redirect
-            router.push('/order');
+            // Redirect to home page
+            router.push('/');
 
             // Force navbar refresh
             window.dispatchEvent(new Event('storage'));

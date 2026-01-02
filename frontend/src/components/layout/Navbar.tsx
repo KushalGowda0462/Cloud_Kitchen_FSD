@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, LogIn, LogOut } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import CartButton from '@/components/order/CartButton';
 
@@ -127,7 +128,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
-            className="text-3xl font-bold text-gray-900 font-[family-name:var(--font-dancing-script)] bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-700 hover:via-red-600 hover:to-orange-700 transition-all"
+            className="flex items-center gap-3"
             onClick={(e) => {
               if (pathname === '/') {
                 e.preventDefault();
@@ -135,7 +136,12 @@ export default function Navbar() {
               }
             }}
           >
-            Thindi Potha
+            <div className="relative w-10 h-10 flex-shrink-0 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
+              <UtensilsCrossed className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-3xl font-bold text-gray-900 font-[family-name:var(--font-dancing-script)] bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-700 hover:via-red-600 hover:to-orange-700 transition-all">
+              Thindi Potha
+            </span>
           </Link>
 
           {/* Desktop Navigation */}

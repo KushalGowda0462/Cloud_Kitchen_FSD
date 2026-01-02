@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack",
+    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack -p 8081",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8081",
     "lint": "eslint",
     "seed": "node --loader ts-node/esm scripts/seed.ts"
   },

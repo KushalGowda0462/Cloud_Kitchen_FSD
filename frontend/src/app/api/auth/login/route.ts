@@ -1,65 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import bcrypt from 'bcrypt';
 import connectDB from '@/lib/db';
 import User from '@/lib/models/User';
-import { generateToken } from '@/lib/utils/jwt';
-
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
 
 export async function POST(request: NextRequest) {
-  try {
-    await connectDB();
-    const body = await request.json();
-    const validatedData = loginSchema.parse(body);
+    try {
+        await connectDB();
+        const body = await request.json();
+        const { email, password } = body;
 
-    // Find user
-    const user = await User.findOne({ email: validatedData.email.toLowerCase() });
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
+        if (!email || !password) {
+            return NextResponse.json({ error: 'Missing email or password' }, { status: 400 });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user || user.password !== password) {
+            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            user: { name: user.name, email: user.email, role: user.role, id: user._id }
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        return NextResponse.json({ error: 'Failed to login' }, { status: 500 });
     }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(validatedData.password, user.passwordHash);
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
-
-    // Generate JWT
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    });
-
-    return NextResponse.json({
-      token,
-      user: {
-        id: user._id.toString(),
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: error.issues[0].message },
-        { status: 400 }
-      );
-    }
-    console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Failed to login' },
-      { status: 500 }
-    );
-  }
 }

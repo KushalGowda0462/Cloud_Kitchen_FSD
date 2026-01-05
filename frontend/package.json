@@ -3,18 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack -p 8081",
+    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack",
     "build": "next build",
-    "start": "next start -p 8081",
+    "start": "next start",
     "lint": "eslint",
     "seed": "node --loader ts-node/esm scripts/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@types/bcrypt": "^6.0.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "bcrypt": "^6.0.0",
-    "jsonwebtoken": "^9.0.3",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.0.2",

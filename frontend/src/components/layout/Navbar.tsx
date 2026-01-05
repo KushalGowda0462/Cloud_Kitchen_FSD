@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, LogIn, LogOut, UtensilsCrossed } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import CartButton from '@/components/order/CartButton';
 
@@ -42,8 +41,7 @@ export default function Navbar() {
   }, []);
 
   const handleSignIn = () => {
-    router.push('/login');
-    setIsMobileMenuOpen(false);
+    window.open('/login', '_blank');
   };
 
   const handleSignOut = () => {
@@ -128,7 +126,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
-            className="flex items-center gap-3"
+            className="text-2xl font-bold text-gray-900"
             onClick={(e) => {
               if (pathname === '/') {
                 e.preventDefault();
@@ -136,12 +134,7 @@ export default function Navbar() {
               }
             }}
           >
-            <div className="relative w-10 h-10 flex-shrink-0 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
-              <UtensilsCrossed className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-3xl font-bold text-gray-900 font-[family-name:var(--font-dancing-script)] bg-gradient-to-r from-orange-600 via-red-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-700 hover:via-red-600 hover:to-orange-700 transition-all">
-              Thindi Potha
-            </span>
+            CloudKitchen
           </Link>
 
           {/* Desktop Navigation */}
@@ -159,6 +152,15 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+
+            {isLoggedIn && user?.role === 'admin' && (
+              <Link
+                href="/admin/orders"
+                className={`px-3 py-2 text-sm font-medium transition-colors ${pathname === '/admin/orders' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Admin Panel
+              </Link>
+            )}
 
             {isLoggedIn && user?.role === 'user' && (
               <Link
@@ -179,12 +181,21 @@ export default function Navbar() {
                 <span>Sign Out</span>
               </button>
             ) : (
-              <button
-                onClick={handleSignIn}
-                className="px-4 py-2 text-sm font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all shadow-md shadow-orange-100"
-              >
-                Sign In
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleSignIn}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all shadow-md shadow-orange-100"
+                >
+                  Sign In
+                </button>
+                <Link
+                  href="/admin/login"
+                  target="_blank"
+                  className="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all"
+                >
+                  Admin Login
+                </Link>
+              </div>
             )}
 
             <CartButton />
@@ -219,6 +230,16 @@ export default function Navbar() {
               </a>
             ))}
 
+            {isLoggedIn && user?.role === 'admin' && (
+              <Link
+                href="/admin/orders"
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Admin Panel
+              </Link>
+            )}
+
             {isLoggedIn && user?.role === 'user' && (
               <Link
                 href="/my-orders"
@@ -239,13 +260,24 @@ export default function Navbar() {
                   <span>Sign Out</span>
                 </button>
               ) : (
-                <button
-                  onClick={handleSignIn}
-                  className="flex items-center gap-2 text-base font-medium text-orange-600 hover:text-orange-700"
-                >
-                  <LogIn size={20} />
-                  <span>Sign In</span>
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={handleSignIn}
+                    className="flex items-center gap-2 text-base font-medium text-orange-600 hover:text-orange-700"
+                  >
+                    <LogIn size={20} />
+                    <span>Customer Sign In</span>
+                  </button>
+                  <Link
+                    href="/admin/login"
+                    target="_blank"
+                    className="flex items-center gap-2 text-base font-medium text-gray-600 hover:text-gray-900"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <ShieldCheck size={20} />
+                    <span>Admin Portal</span>
+                  </Link>
+                </div>
               )}
             </div>
           </div>

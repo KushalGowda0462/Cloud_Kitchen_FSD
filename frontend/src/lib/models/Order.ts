@@ -3,8 +3,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IOrderItem {
   dishId: mongoose.Types.ObjectId;
   name: string;
-  cuisine: string;
-  category: string;
   price: number;
   qty: number;
   isVeg: boolean;
@@ -30,7 +28,9 @@ export type PaymentMethod = 'UPI' | 'CARD' | 'COD';
 export type OrderStatus = 'PLACED' | 'CONFIRMED' | 'PREPARING' | 'OUT_FOR_DELIVERY' | 'DELIVERED';
 
 export interface IOrder extends Document {
-  userId: mongoose.Types.ObjectId;
+  userId?: mongoose.Types.ObjectId;
+  userName?: string;
+  userEmail?: string;
   items: IOrderItem[];
   totals: IOrderTotals;
   address: IOrderAddress;
@@ -43,8 +43,6 @@ export interface IOrder extends Document {
 const OrderItemSchema = new Schema<IOrderItem>({
   dishId: { type: Schema.Types.ObjectId, required: true, ref: 'Dish' },
   name: { type: String, required: true },
-  cuisine: { type: String, required: true },
-  category: { type: String, required: true },
   price: { type: Number, required: true },
   qty: { type: Number, required: true },
   isVeg: { type: Boolean, required: true },
@@ -68,11 +66,9 @@ const OrderTotalsSchema = new Schema<IOrderTotals>({
 
 const OrderSchema = new Schema<IOrder>(
   {
-    userId: { 
-      type: Schema.Types.ObjectId, 
-      ref: 'User',
-      required: true,
-    },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    userName: { type: String },
+    userEmail: { type: String },
     items: [OrderItemSchema],
     totals: OrderTotalsSchema,
     address: OrderAddressSchema,

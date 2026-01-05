@@ -1,28 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
+    name: string;
     email: string;
-    passwordHash: string;
-    role: 'customer' | 'admin';
+    password?: string;
+    role: 'user' | 'admin';
     createdAt: Date;
     updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUser>(
     {
-        email: { 
-            type: String, 
-            required: true, 
-            unique: true,
-            lowercase: true,
-            trim: true,
-        },
-        passwordHash: { type: String, required: true },
-        role: { 
-            type: String, 
-            enum: ['customer', 'admin'], 
-            default: 'customer' 
-        },
+        name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        role: { type: String, enum: ['user', 'admin'], default: 'user' },
     },
     {
         timestamps: true,

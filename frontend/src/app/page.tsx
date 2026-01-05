@@ -281,7 +281,7 @@ function HomeContent() {
             <h3 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h3>
             <div className="prose prose-lg max-w-none">
               <p className="text-gray-700 mb-4">
-                Thindi Potha was born from a simple idea: to make restaurant-quality food accessible to everyone,
+                CloudKitchen was born from a simple idea: to make restaurant-quality food accessible to everyone,
                 delivered fresh and fast. We started with a vision to revolutionize the food delivery experience
                 by focusing on quality, freshness, and customer satisfaction.
               </p>
@@ -589,8 +589,8 @@ function HomeContent() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Email</h4>
-                    <p className="text-gray-600">info@thindipotha.com</p>
-                    <p className="text-gray-600">support@thindipotha.com</p>
+                    <p className="text-gray-600">info@cloudkitchen.com</p>
+                    <p className="text-gray-600">support@cloudkitchen.com</p>
                   </div>
                 </div>
 

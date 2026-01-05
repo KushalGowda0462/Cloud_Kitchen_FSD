@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4 font-[family-name:var(--font-dancing-script)] bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-2xl">Thindi Potha</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">CloudKitchen</h3>
             <p className="text-sm">
               Delivering fresh, delicious meals straight to your doorstep.
             </p>
@@ -84,7 +84,7 @@ export default function Footer() {
                   Contact Us
                 </a>
               </li>
-              <li className="text-gray-400">Email: info@thindipotha.com</li>
+              <li className="text-gray-400">Email: info@cloudkitchen.com</li>
               <li className="text-gray-400">Phone: +91 1234567890</li>
             </ul>
           </div>
@@ -101,7 +101,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Thindi Potha. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} CloudKitchen. All rights reserved.</p>
         </div>
       </div>
     </footer>

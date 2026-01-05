@@ -141,8 +141,8 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-1">Email</h3>
-                <p className="text-gray-600">info@thindipotha.com</p>
-                <p className="text-gray-600">support@thindipotha.com</p>
+                <p className="text-gray-600">info@cloudkitchen.com</p>
+                <p className="text-gray-600">support@cloudkitchen.com</p>
               </div>
             </div>
 

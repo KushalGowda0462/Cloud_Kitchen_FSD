@@ -3,48 +3,68 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
+// Canonical structure with keys
 const cuisines = [
   {
-    name: 'Indian',
-    categories: ['Starters', 'Main Course'],
+    label: 'Indian',
+    key: 'indian',
+    categories: [
+      { label: 'Starters', key: 'starters' },
+      { label: 'Main-Course', key: 'main-course' },
+    ],
   },
   {
-    name: 'Chinese',
-    categories: ['Starters', 'Main Course'],
+    label: 'Chinese',
+    key: 'chinese',
+    categories: [
+      { label: 'Starters', key: 'starters' },
+      { label: 'Main-Course', key: 'main-course' },
+    ],
   },
   {
-    name: 'Italian',
-    categories: ['Starters', 'Main Course'],
+    label: 'Italian',
+    key: 'italian',
+    categories: [
+      { label: 'Starters', key: 'starters' },
+      { label: 'Main-Course', key: 'main-course' },
+    ],
   },
   {
-    name: 'Mexican',
-    categories: ['Starters', 'Main Course'],
+    label: 'Mexican',
+    key: 'mexican',
+    categories: [
+      { label: 'Starters', key: 'starters' },
+      { label: 'Main-Course', key: 'main-course' },
+    ],
   },
   {
-    name: 'Arabian',
-    categories: ['Starters', 'Main Course'],
-  },
-  {
-    name: 'Desserts',
-    categories: ['Starters', 'Main Course'],
+    label: 'Arabian',
+    key: 'arabian',
+    categories: [
+      { label: 'Starters', key: 'starters' },
+      { label: 'Main-Course', key: 'main-course' },
+    ],
   },
 ];
 
+// Desserts is a standalone category (no cuisine)
+const dessertsCategory = { label: 'Desserts', key: 'desserts' };
+
 interface CategoryDropdownProps {
-  selectedCuisine: string;
-  selectedCategory: string;
-  onCuisineChange: (cuisine: string) => void;
-  onCategoryChange: (category: string) => void;
+  selectedCuisineKey: string;
+  selectedCategoryKey: string;
+  onCuisineKeyChange: (cuisineKey: string) => void;
+  onCategoryKeyChange: (categoryKey: string) => void;
 }
 
 export default function CategoryDropdown({
-  selectedCuisine,
-  selectedCategory,
-  onCuisineChange,
-  onCategoryChange,
+  selectedCuisineKey,
+  selectedCategoryKey,
+  onCuisineKeyChange,
+  onCategoryKeyChange,
 }: CategoryDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedCuisine, setExpandedCuisine] = useState<string | null>(null);
+  const [expandedCuisineKey, setExpandedCuisineKey] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,28 +91,26 @@ export default function CategoryDropdown({
     };
   }, [isOpen]);
 
-  const handleCuisineClick = (cuisine: string) => {
-    // Desserts has no subcategories, select it directly
-    if (cuisine === 'Desserts') {
-      onCuisineChange(cuisine);
-      onCategoryChange('all');
-      setIsOpen(false);
-      setExpandedCuisine(null);
-      return;
-    }
-
-    if (expandedCuisine === cuisine) {
-      setExpandedCuisine(null);
+  const handleCuisineClick = (cuisineKey: string) => {
+    if (expandedCuisineKey === cuisineKey) {
+      setExpandedCuisineKey(null);
     } else {
-      setExpandedCuisine(cuisine);
+      setExpandedCuisineKey(cuisineKey);
     }
   };
 
-  const handleCategorySelect = (cuisine: string, category: string) => {
-    onCuisineChange(cuisine);
-    onCategoryChange(category);
+  const handleCategorySelect = (cuisineKey: string, categoryKey: string) => {
+    onCuisineKeyChange(cuisineKey);
+    onCategoryKeyChange(categoryKey);
     setIsOpen(false);
-    setExpandedCuisine(null);
+    setExpandedCuisineKey(null);
+  };
+
+  const handleDessertsClick = () => {
+    onCuisineKeyChange('all');
+    onCategoryKeyChange('desserts');
+    setIsOpen(false);
+    setExpandedCuisineKey(null);
   };
 
   return (
@@ -111,39 +129,50 @@ export default function CategoryDropdown({
         <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
           <div className="p-2">
             {cuisines.map((cuisine) => (
-              <div key={cuisine.name}>
+              <div key={cuisine.key}>
                 <button
-                  onClick={() => handleCuisineClick(cuisine.name)}
-                  className={`w-full flex items-center justify-between px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors ${selectedCuisine === cuisine.name && (cuisine.name === 'Desserts' || selectedCategory !== 'all')
+                  onClick={() => handleCuisineClick(cuisine.key)}
+                  className={`w-full flex items-center justify-between px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors ${selectedCuisineKey === cuisine.key && selectedCategoryKey !== 'all'
                       ? 'bg-blue-50 text-blue-600 font-medium'
                       : ''
                     }`}
                 >
-                  <span className="font-medium">{cuisine.name}</span>
-                  {cuisine.name !== 'Desserts' && (
-                    expandedCuisine === cuisine.name ?
-                      <ChevronDown className="w-4 h-4" /> :
-                      <ChevronRight className="w-4 h-4" />
-                  )}
+                  <span className="font-medium">{cuisine.label}</span>
+                  {expandedCuisineKey === cuisine.key ?
+                    <ChevronDown className="w-4 h-4" /> :
+                    <ChevronRight className="w-4 h-4" />
+                  }
                 </button>
-                {expandedCuisine === cuisine.name && cuisine.name !== 'Desserts' && (
+                {expandedCuisineKey === cuisine.key && (
                   <div className="ml-4 mt-1 space-y-1">
                     {cuisine.categories.map((category) => (
                       <button
-                        key={category}
-                        onClick={() => handleCategorySelect(cuisine.name, category)}
-                        className={`w-full text-left px-4 py-2 rounded-md transition-colors ${selectedCuisine === cuisine.name && selectedCategory === category
+                        key={category.key}
+                        onClick={() => handleCategorySelect(cuisine.key, category.key)}
+                        className={`w-full text-left px-4 py-2 rounded-md transition-colors ${selectedCuisineKey === cuisine.key && selectedCategoryKey === category.key
                             ? 'bg-blue-50 text-blue-600 font-medium'
                             : 'text-gray-700 hover:bg-gray-50'
                           }`}
                       >
-                        {category}
+                        {category.label}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
             ))}
+            {/* Desserts as standalone option */}
+            <div className="mt-2 pt-2 border-t border-gray-200">
+              <button
+                onClick={handleDessertsClick}
+                className={`w-full text-left px-4 py-2 rounded-md transition-colors ${selectedCategoryKey === dessertsCategory.key
+                    ? 'bg-blue-50 text-blue-600 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+              >
+                {dessertsCategory.label}
+              </button>
+            </div>
           </div>
         </div>
       )}

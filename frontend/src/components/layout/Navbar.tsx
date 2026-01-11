@@ -22,16 +22,24 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     const checkUser = () => {
-      const storedUser = sessionStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        setIsLoggedIn(true);
-      } else {
+      try {
+        const storedUser = sessionStorage.getItem('user');
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+          setIsLoggedIn(true);
+        } else {
+          setUser(null);
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
         setUser(null);
         setIsLoggedIn(false);
+      } finally {
+        setAuthReady(true);
       }
     };
 
@@ -41,7 +49,7 @@ export default function Navbar() {
   }, []);
 
   const handleSignIn = () => {
-    window.open('/login', '_blank');
+    router.push('/login');
   };
 
   const handleSignOut = () => {
@@ -153,49 +161,47 @@ export default function Navbar() {
               </a>
             ))}
 
-            {isLoggedIn && user?.role === 'admin' && (
-              <Link
-                href="/admin/orders"
-                className={`px-3 py-2 text-sm font-medium transition-colors ${pathname === '/admin/orders' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
-              >
-                Admin Panel
-              </Link>
-            )}
+            {authReady ? (
+              <>
+                {isLoggedIn && user?.role === 'admin' && (
+                  <Link
+                    href="/admin/orders"
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${pathname === '/admin/orders' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
 
-            {isLoggedIn && user?.role === 'user' && (
-              <Link
-                href="/my-orders"
-                className={`px-3 py-2 text-sm font-medium transition-colors ${pathname === '/my-orders' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
-              >
-                My Orders
-              </Link>
-            )}
-
-            {isLoggedIn ? (
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors"
-                aria-label="Sign Out"
-              >
-                <LogOut size={18} />
-                <span>Sign Out</span>
-              </button>
+                {isLoggedIn ? (
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors"
+                    aria-label="Sign Out"
+                  >
+                    <LogOut size={18} />
+                    <span>Sign Out</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={handleSignIn}
+                      className="px-4 py-2 text-sm font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all shadow-md shadow-orange-100"
+                    >
+                      Sign In
+                    </button>
+                    <Link
+                      href="/admin/login"
+                      target="_blank"
+                      className="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all"
+                    >
+                      Admin Login
+                    </Link>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleSignIn}
-                  className="px-4 py-2 text-sm font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-all shadow-md shadow-orange-100"
-                >
-                  Sign In
-                </button>
-                <Link
-                  href="/admin/login"
-                  target="_blank"
-                  className="px-4 py-2 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all"
-                >
-                  Admin Login
-                </Link>
-              </div>
+              // Placeholder to prevent layout shift
+              <div className="w-[200px] h-[40px]" />
             )}
 
             <CartButton />
@@ -230,56 +236,50 @@ export default function Navbar() {
               </a>
             ))}
 
-            {isLoggedIn && user?.role === 'admin' && (
-              <Link
-                href="/admin/orders"
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Admin Panel
-              </Link>
-            )}
-
-            {isLoggedIn && user?.role === 'user' && (
-              <Link
-                href="/my-orders"
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                My Orders
-              </Link>
-            )}
-
-            <div className="px-3 py-2">
-              {isLoggedIn ? (
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-red-600"
-                >
-                  <LogOut size={20} />
-                  <span>Sign Out</span>
-                </button>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={handleSignIn}
-                    className="flex items-center gap-2 text-base font-medium text-orange-600 hover:text-orange-700"
-                  >
-                    <LogIn size={20} />
-                    <span>Customer Sign In</span>
-                  </button>
+            {authReady && (
+              <>
+                {isLoggedIn && user?.role === 'admin' && (
                   <Link
-                    href="/admin/login"
-                    target="_blank"
-                    className="flex items-center gap-2 text-base font-medium text-gray-600 hover:text-gray-900"
+                    href="/admin/orders"
+                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <ShieldCheck size={20} />
-                    <span>Admin Portal</span>
+                    Admin Panel
                   </Link>
+                )}
+
+                <div className="px-3 py-2">
+                  {isLoggedIn ? (
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-red-600"
+                    >
+                      <LogOut size={20} />
+                      <span>Sign Out</span>
+                    </button>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={handleSignIn}
+                        className="flex items-center gap-2 text-base font-medium text-orange-600 hover:text-orange-700"
+                      >
+                        <LogIn size={20} />
+                        <span>Customer Sign In</span>
+                      </button>
+                      <Link
+                        href="/admin/login"
+                        target="_blank"
+                        className="flex items-center gap-2 text-base font-medium text-gray-600 hover:text-gray-900"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <ShieldCheck size={20} />
+                        <span>Admin Portal</span>
+                      </Link>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         )}
       </div>

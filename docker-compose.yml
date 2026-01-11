@@ -1,15 +1,11 @@
 services:
   mongodb:
     image: mongo:7
-    container_name: mongodb
+    container_name: cloudkitchen_mongo
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: adminpassword
-      MONGO_INITDB_DATABASE: cloudkitchen
     volumes:
-      - mongo_data:/data/db
+      - cloudkitchen_mongo_data:/data/db
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
@@ -20,20 +16,16 @@ services:
 
   mongo-express:
     image: mongo-express:1
-    container_name: mongo-express
+    container_name: cloudkitchen_mongo_express
     ports:
       - "8083:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: adminpassword
-      ME_CONFIG_MONGODB_URL: mongodb://admin:adminpassword@mongodb:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: adminpassword
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017
     depends_on:
       mongodb:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  mongo_data:
+  cloudkitchen_mongo_data:
 

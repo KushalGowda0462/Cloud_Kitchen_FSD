@@ -20,25 +20,33 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+            // For signup, only send email and password (API doesn't need name)
+            const requestBody = isLogin 
+                ? { email: formData.email, password: formData.password }
+                : { email: formData.email, password: formData.password };
+            
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(requestBody),
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
+            if (!response.ok || !data.ok) {
                 throw new Error(data.error || 'Something went wrong');
             }
 
-            // Save user to session storage for temporary auth state
+            // Save user and token to session storage
+            if (data.token) {
+                sessionStorage.setItem('token', data.token);
+            }
             sessionStorage.setItem('user', JSON.stringify(data.user));
-            toast.success(`Welcome back, ${data.user.name}!`);
+            toast.success(`Welcome ${isLogin ? 'back' : ''}, ${data.user.email || 'User'}!`);
 
-            // Strictly user redirect
-            router.push('/order');
+            // Redirect to home page
+            router.replace('/');
 
             // Force navbar refresh
             window.dispatchEvent(new Event('storage'));

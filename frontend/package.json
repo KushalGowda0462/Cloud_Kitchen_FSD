@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack",
+    "dev": "set NEXT_DISABLE_TURBOPACK=1 && next dev --webpack -p 8081",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8081",
     "lint": "eslint",
-    "seed": "node --loader ts-node/esm scripts/seed.ts"
+    "seed": "node --loader ts-node/esm scripts/seed.ts",
+    "seed-custom": "node --loader ts-node/esm scripts/seed-menu.ts",
+    "check-db": "node scripts/check-db.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.3",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.0.2",

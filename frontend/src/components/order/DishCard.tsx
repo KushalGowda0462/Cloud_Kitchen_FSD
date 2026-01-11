@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
@@ -17,6 +18,7 @@ interface DishCardProps {
 
 export default function DishCard({ dish }: DishCardProps) {
   const { dispatch } = useCart();
+  const [imageError, setImageError] = useState(false);
 
   const handleAddToCart = () => {
     dispatch({
@@ -36,13 +38,28 @@ export default function DishCard({ dish }: DishCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 w-full bg-gray-200">
-        <Image
-          src={dish.imageUrl || 'https://via.placeholder.com/300x200?text=Dish+Image'}
-          alt={dish.name}
-          fill
-          className="object-cover"
-          unoptimized
-        />
+        {/* STEP 5: Temporarily use plain <img> instead of Next.js Image to isolate issues */}
+        {!imageError && dish.imageUrl && dish.imageUrl !== '/assets/menu/placeholder.png' ? (
+          <img
+            src={dish.imageUrl}
+            alt={dish.name}
+            className="w-full h-full object-cover"
+            onError={() => {
+              console.error('Image failed to load:', dish.imageUrl);
+              setImageError(true);
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-red-100">
+            <div className="text-center">
+              <div className="text-4xl mb-2">🍽️</div>
+              <p className="text-xs text-gray-500">Image not available</p>
+              {dish.imageUrl && (
+                <p className="text-xs text-red-500 mt-1">URL: {dish.imageUrl.substring(0, 50)}...</p>
+              )}
+            </div>
+          </div>
+        )}
         <div
           className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center ${dish.isVeg ? 'bg-green-500' : 'bg-red-500'
             }`}

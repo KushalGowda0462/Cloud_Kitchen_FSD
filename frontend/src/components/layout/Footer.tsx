@@ -1,5 +1,12 @@
 'use client';
 
+import { Pacifico } from 'next/font/google';
+
+const brandScript = Pacifico({
+  subsets: ['latin'],
+  weight: '400',
+});
+
 export default function Footer() {
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('#')) {
@@ -23,7 +30,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">CloudKitchen</h3>
+            <div className="mb-4">
+              <h3 className={`${brandScript.className} text-3xl text-orange-400 leading-none`}>
+                Thindi Potha
+              </h3>
+              <p className="text-[10px] font-semibold tracking-[0.15em] text-gray-400 uppercase mt-[-2px]">
+                Cloud Kitchen
+              </p>
+            </div>
             <p className="text-sm">
               Delivering fresh, delicious meals straight to your doorstep.
             </p>
@@ -84,7 +98,7 @@ export default function Footer() {
                   Contact Us
                 </a>
               </li>
-              <li className="text-gray-400">Email: info@cloudkitchen.com</li>
+              <li className="text-gray-400">Email: info@thindipotha.com</li>
               <li className="text-gray-400">Phone: +91 1234567890</li>
             </ul>
           </div>
@@ -101,7 +115,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} CloudKitchen. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Thindi Potha. All rights reserved.</p>
         </div>
       </div>
     </footer>

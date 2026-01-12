@@ -3,9 +3,15 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, LogIn, LogOut, ShieldCheck } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, ShieldCheck, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import CartButton from '@/components/order/CartButton';
+import { Pacifico } from 'next/font/google';
+
+const brandScript = Pacifico({
+  subsets: ['latin'],
+  weight: '400',
+});
 
 const navLinks = [
   { href: '#home', label: 'Home', section: 'home' },
@@ -134,7 +140,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
-            className="text-2xl font-bold text-gray-900"
+            className="flex items-center gap-3 group relative"
             onClick={(e) => {
               if (pathname === '/') {
                 e.preventDefault();
@@ -142,7 +148,20 @@ export default function Navbar() {
               }
             }}
           >
-            CloudKitchen
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-orange-600/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300" />
+              <div className="relative bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-full shadow-lg shadow-orange-200 group-hover:shadow-orange-300 transition-all duration-300 group-hover:scale-110">
+                <UtensilsCrossed className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className={`${brandScript.className} text-4xl text-orange-600 group-hover:text-orange-700 transition-all duration-300 leading-none drop-shadow-sm`}>
+                Thindi Potha
+              </span>
+              <span className="text-[10px] font-semibold tracking-[0.15em] text-gray-600 uppercase mt-1 ml-2">
+                Cloud Kitchen
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

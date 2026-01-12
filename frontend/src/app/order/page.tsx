@@ -62,16 +62,20 @@ export default function OrderPage() {
       });
 
       // Transform to match Dish interface
-      const transformedDishes = (data.dishes || []).map((dish: any) => ({
-        _id: dish.id,
-        name: dish.name,
-        cuisine: dish.cuisineKey || '',
-        category: dish.categoryKey === 'main-course' ? 'Main Course' : dish.categoryKey === 'starters' ? 'Starters' : 'Desserts',
-        isVeg: dish.isVeg,
-        price: dish.price,
-        imageUrl: dish.imageUrl,
-        description: `${dish.name} - Delicious ${dish.cuisineKey || ''} ${dish.categoryKey}`.trim(),
-      }));
+      const transformedDishes = (data.dishes || []).map((dish: any, index: number) => {
+        // MongoDB returns _id as an object, convert to string
+        const dishId = dish._id?.toString() || dish.id?.toString() || `dish-${index}-${Date.now()}`;
+        return {
+          _id: dishId,
+          name: dish.name,
+          cuisine: dish.cuisineKey || '',
+          category: dish.categoryKey === 'main-course' ? 'Main Course' : dish.categoryKey === 'starters' ? 'Starters' : 'Desserts',
+          isVeg: dish.isVeg,
+          price: dish.price,
+          imageUrl: dish.imageUrl,
+          description: `${dish.name} - Delicious ${dish.cuisineKey || ''} ${dish.categoryKey}`.trim(),
+        };
+      });
 
       setDishes(transformedDishes);
     } catch (error) {
@@ -159,8 +163,8 @@ export default function OrderPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {dishes.map((dish) => (
-            <DishCard key={dish._id} dish={dish} />
+          {dishes.map((dish, index) => (
+            <DishCard key={dish._id || `dish-${index}-${dish.name}`} dish={dish} />
           ))}
         </div>
       )}

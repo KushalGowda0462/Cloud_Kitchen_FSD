@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start -p 8081",
     "lint": "eslint",
-    "seed": "node --loader ts-node/esm scripts/seed.ts",
-    "seed-custom": "node --loader ts-node/esm scripts/seed-menu.ts",
-    "check-db": "node scripts/check-db.js"
+    "seed-local": "tsx scripts/seed-local-fs.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -18,7 +16,6 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",
-    "lottie-react": "^2.4.1",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.0.2",
     "next": "16.1.0",
@@ -36,7 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "tailwindcss": "^4",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

@@ -38,8 +38,7 @@ export default function DishCard({ dish }: DishCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 w-full bg-gray-200">
-        {/* STEP 5: Temporarily use plain <img> instead of Next.js Image to isolate issues */}
-        {!imageError && dish.imageUrl && dish.imageUrl !== '/assets/menu/placeholder.png' ? (
+        {!imageError && dish.imageUrl ? (
           <img
             src={dish.imageUrl}
             alt={dish.name}

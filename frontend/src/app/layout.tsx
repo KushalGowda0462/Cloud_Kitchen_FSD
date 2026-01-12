@@ -12,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'CloudKitchen - Fresh Meals Delivered',
-  description: 'Order delicious meals from our cloud kitchen',
+  title: 'Thindi Potha - Fresh Meals Delivered',
+  description: 'Order delicious meals from Thindi Potha cloud kitchen',
 };
 
 export default function RootLayout({
@@ -22,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} antialiased`}>
         <CartProvider>
           <Navbar />
           <main className="min-h-screen">{children}</main>

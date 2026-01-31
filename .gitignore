@@ -75,5 +75,11 @@ logs
 *.tar.gz
 *.rar
 
-
+#Ports
 PORTS.md
+
+#Docker
+docker-compose.yml
+docker.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
